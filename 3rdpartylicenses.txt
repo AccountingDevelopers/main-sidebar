@@ -16,6 +16,8 @@ MIT
 @angular/router
 MIT
 
+accounting-angular-package
+
 primeicons
 MIT
 MIT License
