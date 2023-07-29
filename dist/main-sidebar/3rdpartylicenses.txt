@@ -13,8 +13,7 @@ MIT
 @angular/platform-browser
 MIT
 
-@angular/router
-MIT
+accounting-angular-package
 
 primeicons
 MIT

@@ -1,0 +1,16 @@
+{
+  "name": "accounting-angular-package",
+  "version": "0.0.5",
+  "scripts": {
+    "build": "ng build && sass ../../../dist/core/src/shared/styles/styles.scss",
+    "build:sass": "sass ../../dist/core/src/shared/styles/styles.scss ../../dist/core/shared/assets/styles.css"
+  },
+  "peerDependencies": {
+    "@angular/common": "^15.1.0",
+    "@angular/core": "^15.1.0"
+  },
+  "dependencies": {
+    "tslib": "^2.3.0"
+  },
+  "sideEffects": false
+}
