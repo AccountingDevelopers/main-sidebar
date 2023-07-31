@@ -7,9 +7,12 @@ import { Observable, lastValueFrom } from 'rxjs';
 })
 export class SystemService {
   private apiUrl!: string
+  private clientUrl!: string
+
   constructor(@Inject('config') config: any, private readonly http: HttpClient) {
-    const { url } = config
-    this.apiUrl = url
+    const { client, server } = config.url
+    this.apiUrl = server
+    this.clientUrl = client
   }
 
   currentUser!: any
@@ -23,7 +26,7 @@ export class SystemService {
     this.currentUser = user
   }
 
-  getCurrentCompany(): Observable<{ company: any }> { 
+  getCurrentCompany(): Observable<{ company: any }> {
     return this.http.get<{ company: any }>(`${this.apiUrl}/companies/current`)
   }
 
@@ -31,11 +34,15 @@ export class SystemService {
     return this.http.get<{ user: any }>(`${this.apiUrl}/users/current`)
   }
 
+  sendMessage(action: string, data: any) {
+    return (window.parent.postMessage({
+      action: action,
+      config: data
+    }, this.clientUrl))
+  }
+
 
   addTab(tabData: any) {
-    window.parent.postMessage({
-      action: 'addTab',
-      tabData: tabData
-    }, 'http://localhost:4200/content')
+    this.sendMessage('addTab', tabData)
   }
 }

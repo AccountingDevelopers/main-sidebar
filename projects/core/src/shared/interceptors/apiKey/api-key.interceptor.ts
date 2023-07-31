@@ -7,11 +7,10 @@ import {
   HttpInterceptor
 } from '@angular/common/http';
 import { Observable, from, lastValueFrom } from 'rxjs';
-import { SystemService } from '../../services/system/system.service';
 
 @Injectable()
 export class ApiKeyInterceptor implements HttpInterceptor {
-  constructor(private readonly apiService: ApiService, private readonly systemService: SystemService) { }
+  constructor(private readonly apiService: ApiService) { }
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     return from(this.handle(request, next))

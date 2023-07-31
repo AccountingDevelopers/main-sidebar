@@ -1,6 +1,7 @@
+import { SystemService } from 'projects/core/src/shared/services/system/system.service'
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
-import { Observable, lastValueFrom, tap } from 'rxjs';
+import { Observable } from 'rxjs';
 
 @Injectable({
     providedIn: 'root'
@@ -11,15 +12,16 @@ export class ApiService {
     currentUser!: any
     currentCompany!: any
 
-    constructor(@Inject('config') config: any, private readonly http: HttpClient) {
-        const { key, url } = config
+    constructor(@Inject('config') config: any, private readonly http: HttpClient, private readonly systemService: SystemService) {
+        const { key } = config
+        const { server } = config.url
 
         if (!key) {
             throw new Error('Invalid api key')
         }
 
         this.key = key
-        this.apiUrl = url
+        this.apiUrl = server
     }
 
     get apiKey(): string {
@@ -46,13 +48,10 @@ export class ApiService {
 
     navigateTo(url: string | string[]) {
         url = Array.isArray(url) ? url.join('/') : url;
-        window.parent.postMessage({
-            action: 'navigateTo',
-            url: url
-        }, 'http://localhost:4200/content')
+        this.systemService.sendMessage('navigateTo', url)
     }
 
     createModule(data: any) {
-        return this.http.post(`${this.apiKey}/modules`, data)
+        return this.http.post(`${this.apiUrl}/modules`, data)
     }
 }

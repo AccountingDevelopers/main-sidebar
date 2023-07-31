@@ -1,6 +1,9 @@
 export interface IConfiguration {
     api: {
         key: string,
-        url: string
+        url: {
+            client: string,
+            server: string
+        }
     }
 }
