@@ -1,20 +1,19 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ApiService } from 'projects/core/src/shared/services/api/api.service';
-import { SystemDialogService } from 'projects/core/src/shared/services/dialogs/system-dialog.service';
-import { SystemService } from 'projects/core/src/shared/services/system/system.service';
+import { AccApiService } from 'ng-accounting';
+import { AccDialogService } from 'ng-accounting';
+import { AccSystemService } from 'ng-accounting';
 import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
-    styleUrls: ['./app.component.scss'],
-    providers: []
+    styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit, OnDestroy {
     constructor(
-        private readonly apiService: ApiService,
-        public readonly systemService: SystemService,
-        private readonly systemDialogService: SystemDialogService
+        private readonly accApiService: AccApiService,
+        public readonly accSystemService: AccSystemService,
+        private readonly accDialogService: AccDialogService
     ) { }
 
     subscription: Subscription = new Subscription()
@@ -23,13 +22,12 @@ export class AppComponent implements OnInit, OnDestroy {
         isLoadingData: false
     }
 
-
     ngOnInit(): void {
         this.fetchModules()
     }
 
     fetchModules(): void {
-        this.subscription.add(this.apiService.getModules({}).subscribe({
+        this.subscription.add(this.accApiService.getModules({}).subscribe({
             next: ({ modules }) => {
                 this.modules = modules
             }
@@ -37,36 +35,42 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     onCreateModule() {
-        this.systemDialogService.open('createModule', { mode: 'create' }).onClose.subscribe({
+        this.subscription.add(this.accDialogService.open('createModule', { mode: 'create' }).onClose.subscribe({
             next: (event: MessageEvent) => {
                 const { action, config } = event.data
                 if (action === 'dialogResponse') {
                     this.createModule(config)
                 }
             }
-        })
+        }))
     }
 
     createModule(data: any) {
-        this.subscription.add(this.apiService.createModule(data).subscribe({
+        this.subscription.add(this.accApiService.createModule(data).subscribe({
             next: () => {
                 this.fetchModules()
             }
         }))
     }
 
-
     openModule(module: any) {
         const url = `content/${module.identifier}`
         this.navigateTo(url)
-        this.systemService.addTab({
+        this.accSystemService.addTab({
             label: module.label,
             routerLink: url
         })
     }
 
-    navigateTo(url: string | string[]): void {
-        this.apiService.navigateTo(url)
+    navigateTo(url: string | string[], addTabConf?: { label: string }): void {
+        this.accApiService.navigateTo(url)
+
+        if (addTabConf) {
+            this.accSystemService.addTab({
+                label: addTabConf.label,
+                routerLink: url
+            })
+        }
     }
 
     ngOnDestroy() {

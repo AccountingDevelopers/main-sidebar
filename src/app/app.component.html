@@ -3,11 +3,11 @@
     <div class="sidebar__part">
       <div class="sidebar__info">
         <p class="sidebar__info-company-name">
-          {{ systemService.currentCompany.name }}
+          {{ accSystemService.currentCompany.name.full }}
         </p>
          
         <div class="sidebar__controls">
-          <p-button icon="pi pi-cog" styleClass="p-button-text"></p-button>
+          <p-button icon="pi pi-cog" styleClass="p-button-text" (onClick)="navigateTo('settings', {label: 'Налаштування'})"></p-button>
           <p-button icon="pi pi-ellipsis-v" styleClass="p-button-text"></p-button>
         </div> 
       </div> 
